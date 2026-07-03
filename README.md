@@ -1,5 +1,15 @@
 # 🌍 WanderLust
 
+A full-stack Airbnb-inspired travel accommodation booking web application.
+
+## 🔗 Live Demo
+
+👉 https://wanderlust-uzd6.onrender.com
+
+## 📂 GitHub Repository
+
+👉 https://github.com/shivaniswaraj-1/wanderlust
+
 > An Airbnb-inspired full-stack vacation rental platform where users can discover, create, and manage property listings with secure authentication, image uploads, interactive maps, and user reviews.
 
 ![Node.js](https://img.shields.io/badge/Node.js-20+-green)
