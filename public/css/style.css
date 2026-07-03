@@ -1,0 +1,104 @@
+/* ── Global ───────────────────────────────────────────────── */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #ffffff;
+}
+
+/* ── Listing cards ────────────────────────────────────────── */
+.listing-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.listing-card {
+  border: none !important;
+  border-radius: 1rem !important;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin-bottom: 1.5rem;
+}
+
+.listing-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* ── Show page image ──────────────────────────────────────── */
+.show-card {
+  border: none !important;
+  border-radius: 1rem !important;
+}
+
+.show-img {
+  height: 30vh;
+  object-fit: cover;
+  border-radius: 1rem 1rem 0 0;
+}
+
+/* ── Filter bar ───────────────────────────────────────────── */
+#filters {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  align-items: center;
+  padding-bottom: 0.5rem;
+  scrollbar-width: none;
+}
+#filters::-webkit-scrollbar { display: none; }
+
+.filter {
+  text-align: center;
+  margin-right: 2rem;
+  margin-top: 1rem;
+  opacity: 0.6;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.filter:hover { opacity: 1; }
+.filter p { font-size: 0.78rem; margin-top: 4px; margin-bottom: 0; }
+
+/* ── Tax info toggle ──────────────────────────────────────── */
+.tax-info { display: none; }
+
+.tax-toggle {
+  border: 1px solid #999;
+  border-radius: 1rem;
+  height: 3.25rem;
+  padding: 0.6rem 1rem;
+  margin-left: 2rem;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* ── Buttons ──────────────────────────────────────────────── */
+.add-btn,
+.edit-btn {
+  background-color: #222;
+  color: #fff;
+  border: none;
+}
+.add-btn:hover,
+.edit-btn:hover {
+  background-color: #444;
+  color: #fff;
+}
+
+/* ── Edit / show page ─────────────────────────────────────── */
+.btns {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  margin-left: calc(25% + 0.75rem); /* align with col-6 offset-3 */
+}
+
+/* ── Footer ───────────────────────────────────────────────── */
+.footer a { color: inherit; }
+.footer a:hover { color: #fff; }
+
+/* ── Map ──────────────────────────────────────────────────── */
+#map {
+  z-index: 0; /* keep map below Bootstrap modals/dropdowns */
+}
