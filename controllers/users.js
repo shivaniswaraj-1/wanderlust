@@ -78,7 +78,9 @@ module.exports.sendOtpVerificationEmail = async (req, res) => {
         debugLog("OTP persisted for", email, "(expires in 5 min)");
 
         const transporter = nodemailer.createTransport({
-            service: "gmail",
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false,
             auth: {
                 user: process.env.VERIFICATION_SENDER_EMAIL,
                 pass: process.env.VERIFICATION_EMAIL_PASSWORD,
