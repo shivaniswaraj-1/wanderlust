@@ -1,7 +1,8 @@
 const Listing    = require("./models/listing");
 const Review     = require("./models/reviews");
+const Booking    = require("./models/booking");
 const ExpressError = require("./utils/ExpressError.js");
-const { listingSchema, reviewSchema } = require("./schema.js");
+const { listingSchema, reviewSchema, bookingSchema } = require("./schema.js");
 
 module.exports.isLoggedIn = (req, res, next) => {
   if (!req.isAuthenticated()) {
@@ -34,8 +35,17 @@ module.exports.isOwner = async (req, res, next) => {
   next();
 };
 
+// Every form on the site now carries a `_csrf` field (see app.js's CSRF
+// setup), which isn't part of any of these domain schemas — Joi rejects
+// unknown top-level keys by default, so it must be stripped before
+// validating, not treated as a schema field.
+function withoutCsrf(body) {
+  const { _csrf, ...rest } = body;
+  return rest;
+}
+
 module.exports.validateListing = (req, res, next) => {
-  const { error } = listingSchema.validate(req.body);
+  const { error } = listingSchema.validate(withoutCsrf(req.body));
   if (error) {
     const errMsg = error.details.map((el) => el.message).join(", ");
     throw new ExpressError(400, errMsg);
@@ -44,7 +54,7 @@ module.exports.validateListing = (req, res, next) => {
 };
 
 module.exports.validateReview = (req, res, next) => {
-  const { error } = reviewSchema.validate(req.body);
+  const { error } = reviewSchema.validate(withoutCsrf(req.body));
   if (error) {
     const errMsg = error.details.map((el) => el.message).join(", ");
     throw new ExpressError(400, errMsg);
@@ -63,6 +73,30 @@ module.exports.isReviewAuthor = async (req, res, next) => {
   if (!review.author || !review.author._id.equals(req.user._id)) {
     req.flash("error", "You are not the author of this review.");
     return res.redirect(`/listings/${id}`);
+  }
+  next();
+};
+
+module.exports.validateBooking = (req, res, next) => {
+  const { error } = bookingSchema.validate(withoutCsrf(req.body));
+  if (error) {
+    const errMsg = error.details.map((el) => el.message).join(", ");
+    throw new ExpressError(400, errMsg);
+  }
+  next();
+};
+
+// isBookingGuest – only the guest who made a booking may cancel it
+module.exports.isBookingGuest = async (req, res, next) => {
+  const { bookingId } = req.params;
+  const booking = await Booking.findById(bookingId);
+  if (!booking) {
+    req.flash("error", "Booking not found.");
+    return res.redirect("/trips");
+  }
+  if (!booking.guest || !booking.guest._id.equals(req.user._id)) {
+    req.flash("error", "You are not the guest on this booking.");
+    return res.redirect("/trips");
   }
   next();
 };

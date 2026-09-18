@@ -25,3 +25,11 @@ module.exports.reviewSchema = Joi.object({
     comment: Joi.string().required(),
   }).required(),
 });
+
+// ── Booking validation schema ─────────────────────────────────────────────────
+module.exports.bookingSchema = Joi.object({
+  booking: Joi.object({
+    checkIn: Joi.date().required(),
+    checkOut: Joi.date().required().greater(Joi.ref("checkIn")),
+  }).required(),
+});

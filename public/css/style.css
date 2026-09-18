@@ -77,6 +77,146 @@ body {
   border-radius: 1rem 1rem 0 0;
 }
 
+/* ── Booking card (listing show page) & My Trips ─────────────── */
+.booking-card {
+  border-radius: 1rem;
+}
+
+.trip-card {
+  border: none !important;
+  border-radius: 1rem !important;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.trip-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
+}
+.trip-card img {
+  height: 12rem;
+  object-fit: cover;
+}
+
+/* ── Listing form (new / edit) ───────────────────────────────── */
+.form-card {
+  border-radius: 1rem;
+}
+
+.image-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 2px dashed #ccc;
+  border-radius: 0.75rem;
+  padding: 2rem 1rem;
+  cursor: pointer;
+  color: #777;
+  text-align: center;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.image-upload:hover {
+  border-color: #dc3545;
+  color: #dc3545;
+}
+.image-upload i {
+  font-size: 1.75rem;
+}
+.image-upload img {
+  max-width: 100%;
+  max-height: 220px;
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+
+/* ── Navbar ───────────────────────────────────────────────── */
+.navbar-nav .nav-link {
+  position: relative;
+  color: #444;
+  font-weight: 500;
+  padding-bottom: 4px;
+  transition: color 0.15s ease;
+}
+.navbar-nav .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  right: 50%;
+  bottom: 0;
+  height: 2px;
+  border-radius: 1px;
+  background: #dc3545;
+  transition: left 0.2s ease, right 0.2s ease;
+}
+.navbar-nav .nav-link:hover {
+  color: #dc3545;
+}
+.navbar-nav .nav-link:hover::after {
+  left: 0;
+  right: 0;
+}
+
+.user-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #f4f4f5;
+  color: #333;
+  font-size: 0.9rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 2rem;
+}
+
+/* ── Hero banner (listings index) ────────────────────────────
+   A dark gradient overlay sits on top of the background photo so white
+   text stays legible over any part of the image. */
+.hero {
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+  margin-top: 1rem;
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.55) 100%),
+    url("https://images.unsplash.com/photo-1518709268805-4e9042af9f23?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=70")
+      center / cover no-repeat;
+}
+
+.hero-content {
+  max-width: 640px;
+  padding: 2rem 1.5rem;
+}
+
+.hero-content h1 {
+  font-weight: 700;
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+.hero-content p {
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 1.5rem;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+}
+
+.hero-cta {
+  border: none;
+}
+
+@media (max-width: 576px) {
+  .hero {
+    min-height: 260px;
+    border-radius: 0.75rem;
+  }
+}
+
 /* ── Filter bar ───────────────────────────────────────────── */
 #filters {
   display: flex;

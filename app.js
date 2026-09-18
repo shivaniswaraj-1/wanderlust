@@ -40,6 +40,8 @@ const User         = require("./models/user.js");
 
 const listingRouter = require("./routes/listing.js");
 const reviewRouter  = require("./routes/review.js");
+const bookingRouter = require("./routes/booking.js");
+const tripsRouter   = require("./routes/trips.js");
 const userRouter    = require("./routes/user.js");
 
 const app = express();
@@ -182,6 +184,8 @@ app.get("/", (req, res) => {
 
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
+app.use("/listings/:id/bookings", bookingRouter);
+app.use("/trips", tripsRouter);
 app.use("/", userRouter);
 
 // ── 404 ───────────────────────────────────────────────────────────────────────

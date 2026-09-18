@@ -19,8 +19,42 @@
     </div>
   </div>
 
+  <%# Booking form – only for logged-in guests who don't own this listing %>
+  <% const isOwnerViewing = typeof currUser !== 'undefined' && currUser && listing.owner && listing.owner._id.equals(currUser._id); %>
+  <% if (!isOwnerViewing) { %>
+    <div class="col-12 col-lg-8 offset-lg-2">
+      <div class="card border-0 shadow-sm booking-card">
+        <div class="card-body p-4">
+          <h4 class="mb-3">Book your stay</h4>
+          <% if (typeof currUser !== 'undefined' && currUser) { %>
+            <form method="post" action="/listings/<%= listing._id %>/bookings"
+                  novalidate class="needs-validation" id="booking-form">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <div class="row g-3">
+                <div class="col-6">
+                  <label for="checkIn" class="form-label">Check-in</label>
+                  <input type="date" name="booking[checkIn]" id="checkIn" class="form-control" required>
+                  <div class="invalid-feedback">Please choose a check-in date.</div>
+                </div>
+                <div class="col-6">
+                  <label for="checkOut" class="form-label">Check-out</label>
+                  <input type="date" name="booking[checkOut]" id="checkOut" class="form-control" required>
+                  <div class="invalid-feedback">Check-out must be after check-in.</div>
+                </div>
+              </div>
+              <p class="text-muted mt-3 mb-3" id="booking-summary"></p>
+              <button class="btn btn-danger w-100">Reserve</button>
+            </form>
+          <% } else { %>
+            <p class="mb-0"><a href="/login">Log in</a> to book this stay.</p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  <% } %>
+
   <%# Edit / Delete buttons – only for the listing owner %>
-  <% if (typeof currUser !== 'undefined' && currUser && listing.owner && listing.owner._id.equals(currUser._id)) { %>
+  <% if (isOwnerViewing) { %>
     <div class="col-12 col-lg-8 offset-lg-2 btns">
       <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark edit-btn">Edit</a>
       <form method="post" action="/listings/<%= listing._id %>?_method=DELETE">
@@ -111,3 +145,10 @@
   const listingData = <%- listingDataJson %>;
 </script>
 <script src="/js/map.js"></script>
+
+<%# bookedRangesJson is pre-escaped the same way as listingDataJson %>
+<script>
+  const bookedRanges = <%- bookedRangesJson %>;
+  const listingPrice = <%= Number(listing.price) || 0 %>;
+</script>
+<script src="/js/booking.js"></script>

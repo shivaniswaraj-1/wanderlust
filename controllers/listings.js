@@ -1,4 +1,5 @@
 const Listing = require("../models/listing");
+const Booking = require("../models/booking");
 const ExpressError = require("../utils/ExpressError");
 const { cloudinary, uploadToCloudinary } = require("../cloudConfig");
 
@@ -76,7 +77,16 @@ module.exports.showListings = async (req, res) => {
     geometry: listing.geometry,
   }).replace(/</g, "\\u003c");
 
-  res.render("./listings/show.ejs", { listing, listingDataJson });
+  // Existing check-in/check-out ranges, sent to the booking form so it can
+  // grey out already-booked dates client-side. This is a UX nicety only —
+  // createBooking still re-checks for overlaps server-side, since a client
+  // could submit dates outside what's shown here.
+  const existingBookings = await Booking.find({ listing: listing._id });
+  const bookedRangesJson = JSON.stringify(
+    existingBookings.map((b) => ({ checkIn: b.checkIn, checkOut: b.checkOut }))
+  ).replace(/</g, "\\u003c");
+
+  res.render("./listings/show.ejs", { listing, listingDataJson, bookedRangesJson });
 };
 
 module.exports.createListing = async (req, res, next) => {

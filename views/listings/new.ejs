@@ -1,75 +1,98 @@
 <% layout("/layouts/boilerplate") -%>
 
-<div class="row mt-3">
-  <div class="col-12 col-md-8 offset-md-2">
-    <br><br>
-    <h3>Create a new Listing</h3>
-    <form method="post" action="/listings" novalidate
-          class="needs-validation" enctype="multipart/form-data">
-      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+<div class="row mt-4 mb-5">
+  <div class="col-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2">
+    <div class="card shadow-sm border-0 form-card">
+      <div class="card-body p-4 p-md-5">
+        <h3 class="fw-bold mb-1">Create a new listing</h3>
+        <p class="text-muted mb-4">Share your space with travelers around the world.</p>
 
-      <div class="mb-3">
-        <label for="title" class="form-label">Title</label>
-        <input name="listing[title]" placeholder="Enter title"
-               type="text" class="form-control" required>
-        <div class="valid-feedback">Looks good!</div>
-        <div class="invalid-feedback">Title is required.</div>
+        <form method="post" action="/listings" novalidate
+              class="needs-validation" enctype="multipart/form-data">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+          <div class="form-floating mb-3">
+            <input name="listing[title]" id="title" placeholder="Title"
+                   type="text" class="form-control" required>
+            <label for="title">Title</label>
+            <div class="invalid-feedback">Title is required.</div>
+          </div>
+
+          <div class="form-floating mb-3">
+            <textarea name="listing[description]" id="description" placeholder="Description"
+                      class="form-control" style="height: 110px" required></textarea>
+            <label for="description">Description</label>
+            <div class="invalid-feedback">Please enter a short description.</div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label">Listing image</label>
+            <label class="image-upload" for="image">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+              <span id="image-upload-text">Click to upload a photo</span>
+              <img id="image-preview" alt="Selected listing image preview" style="display: none;">
+            </label>
+            <input name="listing[image]" id="image" type="file" accept="image/*" class="visually-hidden">
+          </div>
+
+          <div class="row">
+            <div class="col-md-4 form-floating mb-3">
+              <input name="listing[price]" id="price" placeholder="Price"
+                     type="number" min="0" class="form-control" required>
+              <label for="price">Price (&#8377;/night)</label>
+              <div class="invalid-feedback">Please enter a valid price.</div>
+            </div>
+            <div class="col-md-8 form-floating mb-3">
+              <input name="listing[country]" id="country" placeholder="Country"
+                     type="text" class="form-control" required>
+              <label for="country">Country</label>
+              <div class="invalid-feedback">Please enter a country name.</div>
+            </div>
+          </div>
+
+          <div class="form-floating mb-3">
+            <input name="listing[location]" id="location" placeholder="Location"
+                   type="text" class="form-control" required>
+            <label for="location">Location</label>
+            <div class="invalid-feedback">Please enter a valid location.</div>
+          </div>
+
+          <div class="form-floating mb-4">
+            <select name="listing[category]" id="category" class="form-select" required>
+              <option value="" selected disabled>Choose a category</option>
+              <option value="trending">Trending</option>
+              <option value="rooms">Rooms</option>
+              <option value="iconic-cities">Iconic cities</option>
+              <option value="mountains">Mountains</option>
+              <option value="castles">Castles</option>
+              <option value="amazing-pools">Amazing Pools</option>
+              <option value="camping">Camping</option>
+              <option value="farm">Farm</option>
+              <option value="arctic">Arctic</option>
+              <option value="domes">Domes</option>
+              <option value="boats">Boats</option>
+            </select>
+            <label for="category">Category</label>
+            <div class="invalid-feedback">Please choose a category.</div>
+          </div>
+
+          <button class="btn btn-dark add-btn w-100 py-2 fw-semibold">Add Listing</button>
+        </form>
       </div>
-
-      <div class="mb-3">
-        <label for="description" class="form-label">Description</label>
-        <textarea name="listing[description]" placeholder="Enter description"
-                  class="form-control" required></textarea>
-        <div class="invalid-feedback">Please enter a short description.</div>
-      </div>
-
-      <div class="mb-3">
-        <label for="image" class="form-label">Upload Listing Image</label>
-        <input name="listing[image]" type="file" class="form-control" accept="image/*">
-      </div>
-
-      <div class="row">
-        <div class="mb-3 col-md-4">
-          <label for="price" class="form-label">Price (&#8377;/night)</label>
-          <input name="listing[price]" placeholder="Enter price"
-                 type="number" min="0" class="form-control" required>
-          <div class="invalid-feedback">Please enter a valid price.</div>
-        </div>
-        <div class="mb-3 col-md-8">
-          <label for="country" class="form-label">Country</label>
-          <input name="listing[country]" placeholder="Enter country"
-                 type="text" class="form-control" required>
-          <div class="invalid-feedback">Please enter a country name.</div>
-        </div>
-      </div>
-
-      <div class="mb-3">
-        <label for="location" class="form-label">Location</label>
-        <input name="listing[location]" placeholder="Enter location"
-               type="text" class="form-control" required>
-        <div class="invalid-feedback">Please enter a valid location.</div>
-      </div>
-
-      <div class="mb-3">
-        <label for="category" class="form-label">Category</label>
-        <select name="listing[category]" id="category" class="form-select" required>
-          <option value="" selected disabled>Choose a category</option>
-          <option value="trending">Trending</option>
-          <option value="rooms">Rooms</option>
-          <option value="iconic-cities">Iconic cities</option>
-          <option value="mountains">Mountains</option>
-          <option value="castles">Castles</option>
-          <option value="amazing-pools">Amazing Pools</option>
-          <option value="camping">Camping</option>
-          <option value="farm">Farm</option>
-          <option value="arctic">Arctic</option>
-          <option value="domes">Domes</option>
-          <option value="boats">Boats</option>
-        </select>
-        <div class="invalid-feedback">Please choose a category.</div>
-      </div>
-
-      <button class="btn btn-dark add-btn mt-3">Add Listing</button><br><br>
-    </form>
+    </div>
   </div>
 </div>
+
+<script>
+  const imageInput = document.getElementById("image");
+  const imagePreview = document.getElementById("image-preview");
+  const imageUploadText = document.getElementById("image-upload-text");
+
+  imageInput.addEventListener("change", () => {
+    const file = imageInput.files[0];
+    if (!file) return;
+    imageUploadText.style.display = "none";
+    imagePreview.style.display = "block";
+    imagePreview.src = URL.createObjectURL(file);
+  });
+</script>

@@ -8,69 +8,96 @@
   ];
 %>
 
-<div class="row mt-3">
-  <div class="col-12 col-md-8 offset-md-2">
-    <h3>Edit this Listing</h3>
-    <form method="post" action="/listings/<%= listing._id %>?_method=PUT"
-          novalidate class="needs-validation" enctype="multipart/form-data">
-      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+<div class="row mt-4 mb-5">
+  <div class="col-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2">
+    <div class="card shadow-sm border-0 form-card">
+      <div class="card-body p-4 p-md-5">
+        <h3 class="fw-bold mb-1">Edit this listing</h3>
+        <p class="text-muted mb-4">Update the details travelers will see.</p>
 
-      <div class="mb-3">
-        <label for="title" class="form-label">Title</label>
-        <input name="listing[title]" value="<%= listing.title %>"
-               type="text" class="form-control" required>
-        <div class="invalid-feedback">Title is required.</div>
+        <form method="post" action="/listings/<%= listing._id %>?_method=PUT"
+              novalidate class="needs-validation" enctype="multipart/form-data">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+          <div class="form-floating mb-3">
+            <input name="listing[title]" id="title" placeholder="Title" value="<%= listing.title %>"
+                   type="text" class="form-control" required>
+            <label for="title">Title</label>
+            <div class="invalid-feedback">Title is required.</div>
+          </div>
+
+          <div class="form-floating mb-3">
+            <textarea name="listing[description]" id="description" placeholder="Description"
+                      class="form-control" style="height: 110px" required><%= listing.description %></textarea>
+            <label for="description">Description</label>
+            <div class="invalid-feedback">Please enter a short description.</div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label">Listing image</label>
+            <label class="image-upload" for="image">
+              <i class="fa-solid fa-cloud-arrow-up" style="<%= originalImageUrl ? 'display:none' : '' %>"></i>
+              <span id="image-upload-text" style="<%= originalImageUrl ? 'display:none' : '' %>">Click to upload a photo</span>
+              <img id="image-preview" alt="Selected listing image preview"
+                   src="<%= originalImageUrl || '' %>"
+                   style="<%= originalImageUrl ? '' : 'display: none;' %>">
+            </label>
+            <div class="form-text">Leave empty to keep the current image.</div>
+            <input name="listing[image]" id="image" type="file" accept="image/*" class="visually-hidden">
+          </div>
+
+          <div class="row">
+            <div class="col-md-4 form-floating mb-3">
+              <input name="listing[price]" id="price" placeholder="Price" value="<%= listing.price %>"
+                     type="number" min="0" class="form-control" required>
+              <label for="price">Price (&#8377;/night)</label>
+              <div class="invalid-feedback">Please enter a valid price.</div>
+            </div>
+            <div class="col-md-8 form-floating mb-3">
+              <input name="listing[country]" id="country" placeholder="Country" value="<%= listing.country %>"
+                     type="text" class="form-control" required>
+              <label for="country">Country</label>
+              <div class="invalid-feedback">Country name is required.</div>
+            </div>
+          </div>
+
+          <div class="form-floating mb-3">
+            <input name="listing[location]" id="location" placeholder="Location" value="<%= listing.location %>"
+                   type="text" class="form-control" required>
+            <label for="location">Location</label>
+            <div class="invalid-feedback">Location is required.</div>
+          </div>
+
+          <div class="form-floating mb-4">
+            <select name="listing[category]" id="category" class="form-select" required>
+              <option value="" disabled <%= !listing.category ? "selected" : "" %>>Choose a category</option>
+              <% categoryOptions.forEach(([slug, label]) => { %>
+                <option value="<%= slug %>" <%= listing.category === slug ? "selected" : "" %>><%= label %></option>
+              <% }) %>
+            </select>
+            <label for="category">Category</label>
+            <div class="invalid-feedback">Please choose a category.</div>
+          </div>
+
+          <button class="btn btn-dark edit-btn w-100 py-2 fw-semibold">Save Changes</button>
+        </form>
       </div>
-
-      <div class="mb-3">
-        <label for="description" class="form-label">Description</label>
-        <textarea name="listing[description]" class="form-control" required><%= listing.description %></textarea>
-        <div class="invalid-feedback">Please enter a short description.</div>
-      </div>
-
-      <div class="mb-3">
-        <% if (originalImageUrl) { %>
-          <p>Current image:</p>
-          <img src="<%= originalImageUrl %>" style="max-width: 250px; border-radius: 8px;" alt="current listing image"><br><br>
-        <% } %>
-        <label for="image" class="form-label">Upload new Image (optional)</label>
-        <input name="listing[image]" type="file" class="form-control" accept="image/*">
-      </div>
-
-      <div class="row">
-        <div class="mb-3 col-md-4">
-          <label for="price" class="form-label">Price (&#8377;/night)</label>
-          <input name="listing[price]" value="<%= listing.price %>"
-                 type="number" min="0" class="form-control" required>
-          <div class="invalid-feedback">Please enter a valid price.</div>
-        </div>
-        <div class="mb-3 col-md-8">
-          <label for="country" class="form-label">Country</label>
-          <input name="listing[country]" value="<%= listing.country %>"
-                 type="text" class="form-control" required>
-          <div class="invalid-feedback">Country name is required.</div>
-        </div>
-      </div>
-
-      <div class="mb-3">
-        <label for="location" class="form-label">Location</label>
-        <input name="listing[location]" value="<%= listing.location %>"
-               type="text" class="form-control" required>
-        <div class="invalid-feedback">Location is required.</div>
-      </div>
-
-      <div class="mb-3">
-        <label for="category" class="form-label">Category</label>
-        <select name="listing[category]" id="category" class="form-select" required>
-          <option value="" disabled <%= !listing.category ? "selected" : "" %>>Choose a category</option>
-          <% categoryOptions.forEach(([slug, label]) => { %>
-            <option value="<%= slug %>" <%= listing.category === slug ? "selected" : "" %>><%= label %></option>
-          <% }) %>
-        </select>
-        <div class="invalid-feedback">Please choose a category.</div>
-      </div>
-
-      <button class="btn btn-dark edit-btn mt-3">Save Changes</button><br><br>
-    </form>
+    </div>
   </div>
 </div>
+
+<script>
+  const imageInput = document.getElementById("image");
+  const imagePreview = document.getElementById("image-preview");
+  const imageUploadText = document.getElementById("image-upload-text");
+  const imageUploadIcon = document.querySelector(".image-upload i");
+
+  imageInput.addEventListener("change", () => {
+    const file = imageInput.files[0];
+    if (!file) return;
+    imageUploadText.style.display = "none";
+    imageUploadIcon.style.display = "none";
+    imagePreview.style.display = "block";
+    imagePreview.src = URL.createObjectURL(file);
+  });
+</script>

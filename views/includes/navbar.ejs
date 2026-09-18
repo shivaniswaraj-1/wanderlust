@@ -23,7 +23,10 @@
 
         <% if (typeof currUser !== 'undefined' && currUser) { %>
           <li class="nav-item">
-            <span class="nav-link text-muted">
+            <a class="nav-link" href="/trips">My Trips</a>
+          </li>
+          <li class="nav-item">
+            <span class="user-chip">
               <i class="fa-regular fa-circle-user"></i> <%= currUser.username %>
             </span>
           </li>
