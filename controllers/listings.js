@@ -57,7 +57,16 @@ module.exports.showListings = async (req, res) => {
     req.flash("error", "Listing you requested for does not exist!");
     return res.redirect("/listings");
   }
-  res.render("./listings/show.ejs", { listing });
+
+  // Pre-serialize the data map.js needs, escaping "<" so a location value like
+  // `</script><script>...` can't break out of the inline <script> block it's
+  // embedded in (JSON.stringify alone does not escape "<").
+  const listingDataJson = JSON.stringify({
+    location: listing.location,
+    geometry: listing.geometry,
+  }).replace(/</g, "\\u003c");
+
+  res.render("./listings/show.ejs", { listing, listingDataJson });
 };
 
 module.exports.createListing = async (req, res, next) => {
@@ -89,8 +98,7 @@ module.exports.createListing = async (req, res, next) => {
 
   newListing.geometry = geometry || { type: "Point", coordinates: [0, 0] };
 
-  let savedListing = await newListing.save();
-  console.log(savedListing);
+  await newListing.save();
   req.flash("success", "New Listing Created!");
   res.redirect("/listings");
 };

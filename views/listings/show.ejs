@@ -24,6 +24,7 @@
   <div class="btns">
     <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark col-1 offset-3 edit-btn">Edit</a>
     <form method="post" action="/listings/<%= listing._id %>?_method=DELETE">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <button class="btn btn-dark offset-5">Delete</button>
     </form>
   </div>
@@ -37,6 +38,7 @@
     <h4>Leave a review</h4>
     <form method="post" action="/listings/<%= listing._id %>/reviews"
           novalidate class="needs-validation">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <div class="mb-3 mt-3">
         <label for="rating" class="form-label">Rating</label>
         <fieldset class="starability-slot">
@@ -80,6 +82,7 @@
           <% if (typeof currUser !== 'undefined' && currUser && review.author && review.author._id.equals(currUser._id)) { %>
             <form class="mb-3 ms-3" method="post"
                   action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
               <button class="btn btn-sm btn-dark">Delete</button>
             </form>
           <% } %>
@@ -97,10 +100,9 @@
 
 <%# Pass listing coords to map.js AFTER the map div and after Leaflet JS loads %>
 <script>
-  // Safe serialisation – no XSS risk since this is server-rendered
-  const listingData = <%- JSON.stringify({
-    location: listing.location,
-    geometry: listing.geometry
-  }) %>;
+  // listingDataJson is pre-escaped in the controller (escapes "<" so a
+  // location value can't break out of this <script> block) — see
+  // controllers/listings.js showListings.
+  const listingData = <%- listingDataJson %>;
 </script>
 <script src="/js/map.js"></script>

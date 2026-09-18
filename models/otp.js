@@ -22,6 +22,13 @@ const otpSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  // Counts failed verification attempts against this code. Capped in
+  // controllers/users.js so a single 6-digit OTP can't be brute-forced by
+  // repeated guesses within its 5-minute TTL window.
+  attempts: {
+    type: Number,
+    default: 0,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

@@ -31,6 +31,8 @@ const MongoStore     = require("connect-mongo");
 const flash          = require("connect-flash");
 const passport       = require("passport");
 const LocalStrategy  = require("passport-local");
+const helmet         = require("helmet");
+const { csrfSync }   = require("csrf-sync");
 
 const wrapAsync    = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
@@ -41,6 +43,38 @@ const reviewRouter  = require("./routes/review.js");
 const userRouter    = require("./routes/user.js");
 
 const app = express();
+
+// ── Security headers ─────────────────────────────────────────────────────────
+// Scoped CSP: only the CDNs/services this app actually loads from are allowed.
+// 'unsafe-inline' is needed for script-src/style-src because several pages use
+// inline <script> blocks and Bootstrap/inline styles rather than nonces.
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://unpkg.com"],
+        styleSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "https://cdn.jsdelivr.net",
+          "https://cdnjs.cloudflare.com",
+          "https://unpkg.com",
+        ],
+        fontSrc: ["'self'", "https://cdnjs.cloudflare.com", "data:"],
+        imgSrc: [
+          "'self'",
+          "data:",
+          "https://res.cloudinary.com",
+          "https://images.unsplash.com",
+          "https://*.tile.openstreetmap.org",
+          "https://unpkg.com",
+        ],
+        connectSrc: ["'self'"],
+      },
+    },
+  })
+);
 
 // ── View engine ───────────────────────────────────────────────────────────────
 app.set("view engine", "ejs");
@@ -106,6 +140,8 @@ const sessionOptions = {
     expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     maxAge:  7 * 24 * 60 * 60 * 1000,
     httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
   },
 };
 
@@ -119,12 +155,23 @@ passport.deserializeUser(User.deserializeUser());
 app.use(passport.initialize());
 app.use(passport.session());
 
+// ── CSRF protection ───────────────────────────────────────────────────────────
+// Synchronizer-token pattern: a per-session token is embedded in every form
+// (res.locals.csrfToken) and must come back either as a hidden `_csrf` field
+// (regular form posts) or an `x-csrf-token` header (fetch/XHR calls). GET/HEAD/
+// OPTIONS requests are exempt since they must not mutate state.
+const { csrfSynchronisedProtection, generateToken } = csrfSync({
+  getTokenFromRequest: (req) => req.body._csrf || req.headers["x-csrf-token"],
+});
+app.use(csrfSynchronisedProtection);
+
 // ── Per-request locals ────────────────────────────────────────────────────────
 // Must run AFTER passport so req.user is populated by deserializeUser
 app.use((req, res, next) => {
-  res.locals.currUser = req.user  || null;
-  res.locals.success  = req.flash("success");
-  res.locals.error    = req.flash("error");
+  res.locals.currUser   = req.user  || null;
+  res.locals.success    = req.flash("success");
+  res.locals.error      = req.flash("error");
+  res.locals.csrfToken  = generateToken(req);
   next();
 });
 

@@ -19,11 +19,21 @@
   }).addTo(map);
 
   if (hasCoords) {
+    // Leaflet's bindPopup() renders string content as raw HTML, so building
+    // it with a template literal would let a listing's `location` field
+    // inject arbitrary markup/script (e.g. via <img onerror=...>). Build the
+    // popup as DOM nodes instead and set the location via textContent so it
+    // is always treated as plain text.
+    const popupEl = document.createElement("div");
+    const strongEl = document.createElement("b");
+    strongEl.textContent = listingData.location;
+    popupEl.appendChild(strongEl);
+    popupEl.appendChild(document.createElement("br"));
+    popupEl.appendChild(document.createTextNode("Exact location provided after booking."));
+
     L.marker(latlng)
       .addTo(map)
-      .bindPopup(
-        `<b>${listingData.location}</b><br>Exact location provided after booking.`
-      )
+      .bindPopup(popupEl)
       .openPopup();
   }
 })();

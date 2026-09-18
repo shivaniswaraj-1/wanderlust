@@ -102,10 +102,11 @@ module.exports.sendOtpVerificationEmail = async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Failed to send OTP",
-            error: error.message,
         });
     }
 };
+
+const MAX_OTP_ATTEMPTS = 5;
 
 // ── Step 2: verify OTP (from MongoDB) and complete signup ──────────────────
 // This is the ONLY place the plaintext password ever exists. It arrives in
@@ -118,7 +119,12 @@ module.exports.verifyOtpAndSignup = async (req, res, next) => {
     const { username, email, password, otp } = req.body;
     debugLog("/signup body (password redacted):", { username, email, otp });
 
-    if (!username || !email || !password || !otp) {
+    if (
+        !username || typeof username !== "string" ||
+        !email || typeof email !== "string" ||
+        !password || typeof password !== "string" ||
+        !otp || typeof otp !== "string"
+    ) {
         req.flash("error", "All fields are required.");
         return res.redirect("/signup");
     }
@@ -126,7 +132,20 @@ module.exports.verifyOtpAndSignup = async (req, res, next) => {
     const stored = await Otp.findOne({ email });
     debugLog("OTP lookup:", stored ? "found" : "not found / expired");
 
-    if (!stored || stored.code !== otp) {
+    if (!stored) {
+        req.flash("error", "Invalid or expired OTP");
+        return res.redirect("/signup");
+    }
+
+    if (stored.attempts >= MAX_OTP_ATTEMPTS) {
+        await Otp.deleteOne({ email });
+        req.flash("error", "Too many incorrect attempts. Please request a new code.");
+        return res.redirect("/signup");
+    }
+
+    if (stored.code !== otp) {
+        stored.attempts += 1;
+        await stored.save();
         req.flash("error", "Invalid or expired OTP");
         return res.redirect("/signup");
     }

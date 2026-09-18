@@ -31,6 +31,7 @@
             A 6-digit code was sent to <strong id="otp-target-display"></strong>. Enter it below.
           </p>
           <form action="/signup" method="POST" novalidate class="needs-validation">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <input type="hidden" name="username" id="hidden-username">
             <input type="hidden" name="email"    id="hidden-email">
             <input type="hidden" name="password" id="hidden-password">
@@ -76,7 +77,10 @@ async function requestOtp() {
   try {
     const res = await fetch("/send-otp", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "x-csrf-token": "<%= csrfToken %>",
+      },
       body: JSON.stringify({ email }),
     });
     const data = await res.json();
