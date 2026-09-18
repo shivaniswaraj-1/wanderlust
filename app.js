@@ -67,7 +67,7 @@ app.use(
           "data:",
           "https://res.cloudinary.com",
           "https://images.unsplash.com",
-          "https://*.tile.openstreetmap.org",
+          "https://server.arcgisonline.com",
           "https://unpkg.com",
         ],
         connectSrc: ["'self'"],

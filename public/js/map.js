@@ -1,6 +1,12 @@
 /**
- * map.js – Leaflet + OpenStreetMap map for WanderLust show page.
+ * map.js – Leaflet + Esri World Street Map tiles for WanderLust show page.
  * No API key required. Reads `listingData` injected by show.ejs.
+ *
+ * Tried and rejected first: tile.openstreetmap.org (blocks third-party apps
+ * outright per https://operations.osmfoundation.org/policies/tiles/, serves a
+ * 403 "Access blocked" tile), then CARTO's basemaps.cartocdn.com (now serves
+ * a watermarked "API KEY REQUIRED" tile for unauthenticated requests). Esri's
+ * World Street Map tile service serves real tiles with neither restriction.
  */
 (function () {
   const coords = listingData.geometry && listingData.geometry.coordinates;
@@ -12,11 +18,14 @@
 
   const map = L.map("map").setView(latlng, zoom);
 
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    maxZoom: 19,
-  }).addTo(map);
+  L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+    {
+      attribution:
+        "Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom",
+      maxZoom: 19,
+    }
+  ).addTo(map);
 
   if (hasCoords) {
     // Leaflet's bindPopup() renders string content as raw HTML, so building
