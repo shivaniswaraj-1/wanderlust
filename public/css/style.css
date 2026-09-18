@@ -1,16 +1,52 @@
 /* ── Global ───────────────────────────────────────────────── */
+html {
+  overflow-x: hidden; /* belt-and-braces: no accidental horizontal scroll on mobile */
+}
+
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background-color: #ffffff;
 }
 
-/* ── Listing cards ────────────────────────────────────────── */
+/* ── Buttons (site-wide hover polish) ────────────────────────
+   A consistent "lift" on hover for every Bootstrap button except
+   .btn-link, which should keep behaving like a plain text link. */
+.btn:not(.btn-link) {
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+.btn:not(.btn-link):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+}
+.btn:not(.btn-link):active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.add-btn,
+.edit-btn {
+  background-color: #222;
+  color: #fff;
+  border: none;
+}
+.add-btn:hover,
+.edit-btn:hover {
+  background-color: #444;
+  color: #fff;
+}
+
+/* ── Cards (site-wide hover polish) ──────────────────────────
+   Shared lift+shadow hover for anything meant to feel clickable:
+   listing cards on the index grid and review cards on the show
+   page. The hero image card (.show-card) gets a softer shadow-only
+   treatment since it isn't itself a link. */
 .listing-link {
   text-decoration: none;
   color: inherit;
 }
 
-.listing-card {
+.listing-card,
+.review-card {
   border: none !important;
   border-radius: 1rem !important;
   overflow: hidden;
@@ -18,7 +54,8 @@ body {
   margin-bottom: 1.5rem;
 }
 
-.listing-card:hover {
+.listing-card:hover,
+.review-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
 }
@@ -27,10 +64,15 @@ body {
 .show-card {
   border: none !important;
   border-radius: 1rem !important;
+  transition: box-shadow 0.2s ease;
+}
+.show-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
 }
 
 .show-img {
   height: 30vh;
+  min-height: 220px;
   object-fit: cover;
   border-radius: 1rem 1rem 0 0;
 }
@@ -47,16 +89,32 @@ body {
 #filters::-webkit-scrollbar { display: none; }
 
 .filter {
+  display: block;
   text-align: center;
+  text-decoration: none;
+  color: inherit;
   margin-right: 2rem;
   margin-top: 1rem;
+  padding-bottom: 0.5rem;
   opacity: 0.6;
   flex-shrink: 0;
   cursor: pointer;
-  transition: opacity 0.15s;
+  border-bottom: 2px solid transparent;
+  transition: opacity 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
 }
-.filter:hover { opacity: 1; }
+.filter:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+  color: inherit;
+}
 .filter p { font-size: 0.78rem; margin-top: 4px; margin-bottom: 0; }
+
+/* Currently-selected category filter */
+.filter-active {
+  opacity: 1;
+  font-weight: 600;
+  border-bottom-color: #222;
+}
 
 /* ── Tax info toggle ──────────────────────────────────────── */
 .tax-info { display: none; }
@@ -73,25 +131,25 @@ body {
   white-space: nowrap;
 }
 
-/* ── Buttons ──────────────────────────────────────────────── */
-.add-btn,
-.edit-btn {
-  background-color: #222;
-  color: #fff;
-  border: none;
-}
-.add-btn:hover,
-.edit-btn:hover {
-  background-color: #444;
-  color: #fff;
+/* Smaller phones: tighten spacing so the filter bar/toggle don't
+   force an oversized horizontal scroll area. */
+@media (max-width: 576px) {
+  .filter { margin-right: 1.25rem; }
+  .filter > div i { font-size: 0.9rem; }
+  .tax-toggle {
+    height: auto;
+    padding: 0.5rem 0.75rem;
+    margin-left: 1.25rem;
+  }
+  .tax-toggle label { font-size: 0.85rem; }
 }
 
 /* ── Edit / show page ─────────────────────────────────────── */
 .btns {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.75rem;
   padding: 0.5rem 0;
-  margin-left: calc(25% + 0.75rem); /* align with col-6 offset-3 */
 }
 
 /* ── Footer ───────────────────────────────────────────────── */

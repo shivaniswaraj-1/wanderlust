@@ -15,6 +15,14 @@ const listingSchema = new Schema({
   price: Number,
   location: String,
   country: String,
+  // Backs the clickable filter bar on the index page (Trending, Rooms, ...).
+  category: {
+    type: String,
+    enum: [
+      "trending", "rooms", "iconic-cities", "mountains", "castles",
+      "amazing-pools", "camping", "farm", "arctic", "domes", "boats",
+    ],
+  },
   reviews: [
     {
       type: Schema.Types.ObjectId,

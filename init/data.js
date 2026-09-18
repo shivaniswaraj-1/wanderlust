@@ -22,6 +22,7 @@ const sampleListings = [
     price: 1500,
     location: "Malibu",
     country: "United States",
+    category: "rooms",
     geometry: { type: "Point", coordinates: [-118.7798, 34.0259] },
   },
   {
@@ -35,6 +36,7 @@ const sampleListings = [
     price: 1200,
     location: "Aspen",
     country: "United States",
+    category: "mountains",
     geometry: { type: "Point", coordinates: [-106.8175, 39.1911] },
   },
   {
@@ -48,6 +50,7 @@ const sampleListings = [
     price: 2200,
     location: "Rome",
     country: "Italy",
+    category: "iconic-cities",
     geometry: { type: "Point", coordinates: [12.4964, 41.9028] },
   },
   {
@@ -61,6 +64,7 @@ const sampleListings = [
     price: 5000,
     location: "Bali",
     country: "Indonesia",
+    category: "amazing-pools",
     geometry: { type: "Point", coordinates: [115.1889, -8.4095] },
   },
   {
@@ -74,6 +78,7 @@ const sampleListings = [
     price: 900,
     location: "Tuscany",
     country: "Italy",
+    category: "farm",
     geometry: { type: "Point", coordinates: [11.2558, 43.7711] },
   },
   {
@@ -87,6 +92,7 @@ const sampleListings = [
     price: 3500,
     location: "New York City",
     country: "United States",
+    category: "trending",
     geometry: { type: "Point", coordinates: [-74.006, 40.7128] },
   },
   {
@@ -100,6 +106,7 @@ const sampleListings = [
     price: 700,
     location: "Goa",
     country: "India",
+    category: "rooms",
     geometry: { type: "Point", coordinates: [73.8278, 15.2993] },
   },
   {
@@ -113,6 +120,7 @@ const sampleListings = [
     price: 1800,
     location: "Sahara Desert",
     country: "Morocco",
+    category: "camping",
     geometry: { type: "Point", coordinates: [-5.0078, 31.7917] },
   },
   {
@@ -126,6 +134,7 @@ const sampleListings = [
     price: 4500,
     location: "Zermatt",
     country: "Switzerland",
+    category: "arctic",
     geometry: { type: "Point", coordinates: [7.7491, 46.0207] },
   },
   {
@@ -139,6 +148,7 @@ const sampleListings = [
     price: 2500,
     location: "Srinagar",
     country: "India",
+    category: "boats",
     geometry: { type: "Point", coordinates: [74.7973, 34.0837] },
   },
   {
@@ -152,6 +162,7 @@ const sampleListings = [
     price: 1100,
     location: "Costa Rica",
     country: "Costa Rica",
+    category: "domes",
     geometry: { type: "Point", coordinates: [-84.0739, 9.7489] },
   },
   {
@@ -165,6 +176,7 @@ const sampleListings = [
     price: 6000,
     location: "Santorini",
     country: "Greece",
+    category: "castles",
     geometry: { type: "Point", coordinates: [25.4615, 36.3932] },
   },
 ];

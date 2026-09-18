@@ -1,7 +1,15 @@
 <% layout("/layouts/boilerplate") -%>
+<%
+  const categoryOptions = [
+    ["trending", "Trending"], ["rooms", "Rooms"], ["iconic-cities", "Iconic cities"],
+    ["mountains", "Mountains"], ["castles", "Castles"], ["amazing-pools", "Amazing Pools"],
+    ["camping", "Camping"], ["farm", "Farm"], ["arctic", "Arctic"],
+    ["domes", "Domes"], ["boats", "Boats"],
+  ];
+%>
 
 <div class="row mt-3">
-  <div class="col-8 offset-2">
+  <div class="col-12 col-md-8 offset-md-2">
     <h3>Edit this Listing</h3>
     <form method="post" action="/listings/<%= listing._id %>?_method=PUT"
           novalidate class="needs-validation" enctype="multipart/form-data">
@@ -49,6 +57,17 @@
         <input name="listing[location]" value="<%= listing.location %>"
                type="text" class="form-control" required>
         <div class="invalid-feedback">Location is required.</div>
+      </div>
+
+      <div class="mb-3">
+        <label for="category" class="form-label">Category</label>
+        <select name="listing[category]" id="category" class="form-select" required>
+          <option value="" disabled <%= !listing.category ? "selected" : "" %>>Choose a category</option>
+          <% categoryOptions.forEach(([slug, label]) => { %>
+            <option value="<%= slug %>" <%= listing.category === slug ? "selected" : "" %>><%= label %></option>
+          <% }) %>
+        </select>
+        <div class="invalid-feedback">Please choose a category.</div>
       </div>
 
       <button class="btn btn-dark edit-btn mt-3">Save Changes</button><br><br>

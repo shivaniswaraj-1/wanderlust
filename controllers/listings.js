@@ -39,9 +39,19 @@ async function geocodeLocation(locationString) {
 }
 // ─────────────────────────────────────────────────────────────────────────────
 
+// Filter chip values the index page's filter bar links to (see index.ejs).
+const VALID_CATEGORIES = [
+  "trending", "rooms", "iconic-cities", "mountains", "castles",
+  "amazing-pools", "camping", "farm", "arctic", "domes", "boats",
+];
+
 module.exports.index = async (req, res) => {
-  let allListing = await Listing.find({});
-  res.render("./listings/index.ejs", { allListing });
+  const { category } = req.query;
+  const activeCategory = VALID_CATEGORIES.includes(category) ? category : null;
+  const filter = activeCategory ? { category: activeCategory } : {};
+
+  let allListing = await Listing.find(filter);
+  res.render("./listings/index.ejs", { allListing, activeCategory });
 };
 
 module.exports.renderNewForm = (req, res) => {

@@ -1,49 +1,34 @@
 <% layout("/layouts/boilerplate") -%>
 
-<style>
-  #filters {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    align-items: center;
-    scrollbar-width: none;
-  }
-  #filters::-webkit-scrollbar { display: none; }
-  .filter {
-    text-align: center;
-    margin-right: 2rem;
-    margin-top: 1rem;
-    opacity: 0.7;
-    flex-shrink: 0;
-    cursor: pointer;
-  }
-  .filter:hover { opacity: 1; }
-  .filter p { font-size: 0.8rem; margin-bottom: 0; }
-  .tax-info { display: none; }
-  .tax-toggle {
-    border: 1px solid #888;
-    border-radius: 1rem;
-    height: 3.25rem;
-    padding: 0 1rem;
-    margin-left: 2rem;
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
-  }
-</style>
-
+<%
+  // Each entry: [category slug used in the DB/query string, icon class, label]
+  const filterOptions = [
+    ["trending",      "fa-solid fa-fire",             "Trending"],
+    ["rooms",         "fa-solid fa-bed",              "Rooms"],
+    ["iconic-cities", "fa-solid fa-mountain-city",    "Iconic cities"],
+    ["mountains",     "fa-solid fa-mountain",         "Mountains"],
+    ["castles",       "fa-brands fa-fort-awesome",    "Castles"],
+    ["amazing-pools", "fa-solid fa-person-swimming",  "Amazing Pools"],
+    ["camping",       "fa-solid fa-campground",       "Camping"],
+    ["farm",          "fa-solid fa-cow",              "Farm"],
+    ["arctic",        "fa-solid fa-snowflake",        "Arctic"],
+    ["domes",         "fa-solid fa-igloo",            "Domes"],
+    ["boats",         "fa-solid fa-ship",             "Boats"],
+  ];
+%>
+<%# Filter bar / tax-toggle styling lives in /css/style.css (shared, with a
+    mobile media query) rather than duplicated here. Clicking the active
+    filter again clears it (links back to /listings with no category). %>
 <div id="filters">
-  <div class="filter"><div><i class="fa-solid fa-fire"></i></div><p>Trending</p></div>
-  <div class="filter"><div><i class="fa-solid fa-bed"></i></div><p>Rooms</p></div>
-  <div class="filter"><div><i class="fa-solid fa-mountain-city"></i></div><p>Iconic cities</p></div>
-  <div class="filter"><div><i class="fa-solid fa-mountain"></i></div><p>Mountains</p></div>
-  <div class="filter"><div><i class="fa-brands fa-fort-awesome"></i></div><p>Castles</p></div>
-  <div class="filter"><div><i class="fa-solid fa-person-swimming"></i></div><p>Amazing Pools</p></div>
-  <div class="filter"><div><i class="fa-solid fa-campground"></i></div><p>Camping</p></div>
-  <div class="filter"><div><i class="fa-solid fa-cow"></i></div><p>Farm</p></div>
-  <div class="filter"><div><i class="fa-solid fa-snowflake"></i></div><p>Arctic</p></div>
-  <div class="filter"><div><i class="fa-solid fa-igloo"></i></div><p>Domes</p></div>
-  <div class="filter"><div><i class="fa-solid fa-ship"></i></div><p>Boats</p></div>
+  <% filterOptions.forEach(([slug, icon, label]) => { %>
+    <a
+      class="filter <%= activeCategory === slug ? 'filter-active' : '' %>"
+      href="<%= activeCategory === slug ? '/listings' : '/listings?category=' + slug %>"
+    >
+      <div><i class="<%= icon %>"></i></div>
+      <p><%= label %></p>
+    </a>
+  <% }) %>
   <div class="tax-toggle">
     <div class="form-check-reverse form-switch">
       <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
@@ -52,10 +37,17 @@
   </div>
 </div>
 
-<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
+<% if (activeCategory && allListing.length === 0) { %>
+  <p class="text-muted text-center mt-5">
+    No listings found in this category yet.
+    <a href="/listings">Clear filter</a>
+  </p>
+<% } %>
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mt-3">
   <% for (let list of allListing) { %>
     <a href="/listings/<%= list._id %>" class="listing-link">
-      <div class="card col listing-card" style="width: 24rem;">
+      <div class="card col listing-card">
         <img
           src="<%= (list.image && list.image.url) ? list.image.url : 'https://images.unsplash.com/photo-1625505826533-5c80aca7d157?auto=format&fit=crop&w=800&q=60' %>"
           class="card-img-top"
